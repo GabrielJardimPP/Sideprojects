@@ -1,17 +1,10 @@
-def ts(case):
-    if case == 0:
-        file = 'dijkstraData.txt'
-    if case == 1:
-        file = 'dijkstratest1.txt'
-    if case == 2:
-        file = 'dijkstratest2.txt'
-    if case == 3:
-        file = 'dijkstratest3.txt'
+'''Implementation of Dijkstra's algorithm
+By Gabriel Jardim Pereira Pinto
 
-    return(file)
+O(n^2) solution of Coursera's Algorithms course , programming question 5'''
 
 
-def txt2graph(file):
+def txt2graph(file):  # opens file converting to graph in dictionary structure
 
     fil = open(file, 'r')
     graph = {}
@@ -35,11 +28,7 @@ def txt2graph(file):
     return(graph)
 
 
-def l(graph, v, w):
-    return(graph[v][w])
-
-
-def shortpath(graph, start):
+def shortpath(graph, start):  # Find shortest path from start to all others
     inf = 100000
     vted = set()
     min_dists = {}
@@ -49,16 +38,30 @@ def shortpath(graph, start):
 
     while not vted == set(graph):
 
-        best_edge = inf
+        best_dist = inf
 
-        for v in vted:
-            for w in set(graph[v]) - vted:
-                if min_dists[v] + l(graph,v,w) < min_dists[v] + best_edge:
-                    best_edge = l(graph,v,w)
-                    v_star = v
-                    w_star= w
+        for start in vted:
+            for neighbour in graph[start]:
+                if neighbour not in vted:
+                    current_dist = graph[start][neighbour] + min_dists[start]
 
-        vted.add(w_star)
-        min_dists[w_star] = min_dists[v_star] + best_edge
+                    if current_dist < best_dist:
+                        best_neighbour = neighbour
+                        best_dist = current_dist
+
+        vted.add(best_neighbour)
+        min_dists[best_neighbour] = best_dist
 
     return(min_dists)
+
+
+def answer(graph, start):  # Uses question information to return answer
+
+    min_dists = shortpath(graph, start)
+    desired = [7, 37, 59, 82, 99, 115, 133, 165, 188, 197]
+
+    answers = []
+    for node in desired:
+        answers.append(min_dists[node])
+
+    return(answers)
